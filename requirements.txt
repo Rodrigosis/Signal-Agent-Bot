@@ -1,0 +1,7 @@
+flask
+requests
+python-telegram-bot
+langchain
+langgraph
+langchain-openai
+sqlite-utils

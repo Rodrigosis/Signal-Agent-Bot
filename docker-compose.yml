@@ -1,0 +1,24 @@
+version: "3.3"
+
+services:
+
+  ai-agent-app:
+    build: ./
+    container_name: ai-agente
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - app-net
+
+  llm-proxy:
+    image: rodrigosilvasouza/cof-llm-proxy
+    container_name: llm-proxy
+    ports:
+     - "3030:3030"
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge
