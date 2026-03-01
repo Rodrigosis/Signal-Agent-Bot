@@ -1,0 +1,12 @@
+POST http://localhost:3030/proxy
+Content-Type: application/json
+
+{
+  "payload": {
+    "model": "gpt-4o",
+    "messages": [
+      { "role": "user", "content": "Hello, are you OpenAI?" }
+    ],
+    "temperature": 0.7
+  }
+}

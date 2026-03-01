@@ -11,4 +11,6 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+ENV PYTHONPATH=/app
+
 CMD ["python", "src/application/bot_telegram.py"]

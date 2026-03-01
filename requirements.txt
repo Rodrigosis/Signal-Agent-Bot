@@ -5,3 +5,4 @@ langchain
 langgraph
 langchain-openai
 sqlite-utils
+python-dotenv

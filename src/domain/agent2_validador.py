@@ -1,14 +1,9 @@
 import os
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from src.domain.agent_template_state import RPGState
 from src.infra.llm_proxy import MyCustomLLM
 
-llm = MyCustomLLM(
-    api_url=os.environ["LLM_API_URL"],
-    api_key=os.environ["LLM_API_KEY"],
-    model=os.environ["LLM_MODEL"],
-    temperature=0.8
-)
+llm = MyCustomLLM()
 
 validator_prompt = ChatPromptTemplate.from_messages([
     ("system",

@@ -1,3 +1,4 @@
+import os
 import requests
 from typing import List
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -6,9 +7,9 @@ from langchain_core.outputs import ChatGeneration, ChatResult
 
 
 class MyCustomLLM(BaseChatModel):
-    api_url: str
-    api_key: str
-    model: str
+    api_url: str = os.getenv("LLM_PROXY_URL")
+    api_key: str = os.getenv("LLM_PROXY_API_KEY")
+    model: str = os.getenv("LLM_MODEL")
     temperature: float = 0.8
 
     @property
@@ -26,7 +27,7 @@ class MyCustomLLM(BaseChatModel):
         payload = {
             "model": self.model,
             "messages": [
-                {"role": m.type, "content": m.content}
+                {"role": m.type if not "human" else "user", "content": m.content}
                 for m in messages
             ],
             "temperature": self.temperature
@@ -46,7 +47,7 @@ class MyCustomLLM(BaseChatModel):
         response.raise_for_status()
         data = response.json()
 
-        ai_message = AIMessage(content=data["content"])
+        ai_message = AIMessage(content=data["choices"][0]["message"]["content"])
 
         return ChatResult(
             generations=[ChatGeneration(message=ai_message)]
