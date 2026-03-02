@@ -1,8 +1,11 @@
 flask
 requests
 python-telegram-bot
-langchain
 langgraph
-langchain-openai
 sqlite-utils
 python-dotenv
+deepagents
+tavily-python
+langchain
+langchain-community
+langchain-openai

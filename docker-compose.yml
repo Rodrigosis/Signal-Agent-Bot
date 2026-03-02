@@ -4,10 +4,15 @@ services:
 
   ai-agent-app:
     build: ./
-    container_name: ai-agente
+    container_name: ai-agent
     restart: always
     ports:
       - "3000:3000"
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - LLM_PROXY_URL=${LLM_PROXY_URL}
+      - LLM_PROXY_API_KEY=${LLM_PROXY_API_KEY}
+      - LLM_MODEL=${LLM_MODEL}
     networks:
       - app-net
 
@@ -16,6 +21,11 @@ services:
     container_name: llm-proxy
     ports:
      - "3030:3030"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - XAI_API_KEY=${XAI_API_KEY}
+      - VENICE_API_KEY=${VENICE_API_KEY}
+      - LOG_LEVEL=INFO
     networks:
       - app-net
 
