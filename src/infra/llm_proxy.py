@@ -41,7 +41,7 @@ class MyCustomLLM(BaseChatModel):
             self.api_url,
             json=payload,
             headers=headers,
-            timeout=60
+            timeout=120
         )
 
         response.raise_for_status()
