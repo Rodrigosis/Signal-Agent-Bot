@@ -2,31 +2,14 @@ import os
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
+from langchain_core.messages import HumanMessage
 from src.domain.ai_agent import rpg_master
-from langchain_core.messages import SystemMessage, HumanMessage
+from src.domain.create_prompt import SYSTEM_PROMPT
 
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 user_states = {}
 
-SYSTEM_PROMPT = SystemMessage(
-    content="""
-Você é um Mestre de RPG experiente.
-Seu papel é:
-- Narrar o mundo e os acontecimentos
-- Interpretar NPCs
-- Reagir às escolhas do jogador
-- Criar consequências interessantes
-- Manter consistência narrativa
-
-Regras:
-- Nunca controle as ações do jogador
-- Faça perguntas claras sobre decisões
-- Crie uma história envolvente
-- Use descrições sensoriais
-- Quando uma decisão for crítica, sinalize claramente
-"""
-)
 
 def create_initial_state():
     return {
@@ -45,7 +28,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # mensagem inicial do jogador
     user_states[chat_id]["messages"].append(
-        HumanMessage(content="Inicie a campanha com uma cena épica.")
+        HumanMessage(content="Inicie a campanha do jogo")
     )
 
     result = rpg_master.invoke(user_states[chat_id])

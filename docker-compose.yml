@@ -9,10 +9,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - LLM_PROXY_URL=${LLM_PROXY_URL}
       - LLM_PROXY_API_KEY=${LLM_PROXY_API_KEY}
       - LLM_MODEL=${LLM_MODEL}
+      - GITHUB_PROMPT_FILE=${GITHUB_PROMPT_FILE}
     networks:
       - app-net
 
