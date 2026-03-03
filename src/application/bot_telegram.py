@@ -1,4 +1,5 @@
 import os
+import structlog
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
@@ -7,6 +8,7 @@ from src.domain.ai_agent import rpg_master
 from src.domain.create_prompt import SYSTEM_PROMPT
 
 load_dotenv()
+logger = structlog.get_logger()
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 user_states = {}
 
@@ -21,6 +23,7 @@ def create_initial_state():
     }
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.info("received_request", model="start")
     chat_id = update.effective_chat.id
 
     # cria novo estado para esse chat
@@ -41,6 +44,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.info("received_request", model="echo")
     chat_id = update.effective_chat.id
     text = update.message.text
 
