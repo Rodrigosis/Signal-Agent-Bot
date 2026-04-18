@@ -1,76 +1,26 @@
-from typing import TypedDict, List
-from langgraph.graph import StateGraph, END
-from langchain_core.messages import BaseMessage, SystemMessage
-
+from deepagents import create_deep_agent
+from langgraph.checkpoint.memory import MemorySaver
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from src.infra.llm_proxy import MyCustomLLM
-
-llm = MyCustomLLM()
-
-
-class RPGState(TypedDict):
-    messages: List[BaseMessage]
-    iterations: int
-    needs_human: bool
+from src.domain.create_prompt import SYSTEM_PROMPT
 
 # ======================
-# NÓ: MESTRE DE RPG
+# Inicializa o Deep Agent (uma vez só)
 # ======================
-def rpg_narrator(state: RPGState) -> RPGState:
-    response = llm.invoke(state["messages"])
+llm = MyCustomLLM()  # sua LLM customizada continua funcionando perfeitamente
 
-    state["messages"].append(response)
-    state["iterations"] += 1
+checkpointer = MemorySaver()
 
-    # Heurística simples para decisão crítica
-    state["needs_human"] = (
-        "decisão crítica" in response.content.lower()
-        or "escolha difícil" in response.content.lower()
-    )
-
-    return state
-
-# ======================
-# NÓ: HUMAN IN THE LOOP
-# ======================
-def human_approval(state: RPGState) -> RPGState:
-    print("\n⚠️ DECISÃO CRÍTICA DO MESTRE ⚠️\n")
-    print(state["messages"][-1].content)
-
-    user_input = input("\n👉 Supervisor humano (OK ou correção): ")
-
-    if user_input.strip().lower() != "ok":
-        state["messages"].append(
-            SystemMessage(
-                content=f"Correção do supervisor humano: {user_input}"
-            )
-        )
-
-    state["needs_human"] = False
-    return state
-
-# ======================
-# ROTEAMENTO
-# ======================
-def route_after_narration(state: RPGState):
-    if state["needs_human"]:
-        return "human_approval"
-    return END
-
-# ======================
-# GRAFO
-# ======================
-graph = StateGraph(RPGState)
-
-graph.add_node("narrator", rpg_narrator)
-graph.add_node("human_approval", human_approval)
-
-graph.set_entry_point("narrator")
-
-graph.add_conditional_edges(
-    "narrator",
-    route_after_narration,
+rpg_deep_agent = create_deep_agent(
+    model=llm,
+    system_prompt=SYSTEM_PROMPT.content if hasattr(SYSTEM_PROMPT, "content") else str(SYSTEM_PROMPT),
+    tools=[],                    # adicione ferramentas depois se quiser (buscar lore, rolar dados, etc.)
+    checkpointer=checkpointer,
+    # interrupt_on={}            # você pode configurar aqui se usar ferramentas que precisam de aprovação
 )
 
-graph.add_edge("human_approval", END)
-
-rpg_master = graph.compile()
+def get_or_create_thread(chat_id: int):
+    """Cria ou recupera o thread (conversa) por chat_id"""
+    thread_id = f"telegram_rpg_{chat_id}"
+    config = {"configurable": {"thread_id": thread_id}}
+    return config

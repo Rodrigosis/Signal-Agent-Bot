@@ -12,6 +12,14 @@ class MyCustomLLM(BaseChatModel):
     model: str = os.getenv("LLM_MODEL")
     temperature: float = 0.8
 
+    def bind_tools(self, tools, **kwargs):
+        """Ignora tools porque não suportamos tool calling"""
+        return self  # retorna ele mesmo sem bind
+
+    def with_structured_output(self, schema, **kwargs):
+        """Se precisar, implemente ou retorne self também"""
+        return self
+
     @property
     def _llm_type(self) -> str:
         return self.model

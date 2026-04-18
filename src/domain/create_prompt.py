@@ -9,8 +9,8 @@ url = os.getenv("GITHUB_PROMPT_FILE")
 with urllib.request.urlopen(url) as response:
     texto = response.read().decode("utf-8")
 
-# with open("arquivo.txt", "w", encoding="utf-8") as f:
-#     f.write(texto)
+with open("arquivo.txt", "w", encoding="utf-8") as f:
+    f.write(texto)
 
 SYSTEM_PROMPT = SystemMessage(
     content=f"""
