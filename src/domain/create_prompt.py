@@ -1,16 +1,14 @@
 import os
-import urllib.request
 from langchain_core.messages import SystemMessage
 from dotenv import load_dotenv
+import requests
 
 load_dotenv()
-url = os.getenv("GITHUB_PROMPT_FILE")
 
-with urllib.request.urlopen(url) as response:
-    texto = response.read().decode("utf-8")
-
-with open("arquivo.txt", "w", encoding="utf-8") as f:
-    f.write(texto)
+response = requests.get(
+    url=f'https://raw.githubusercontent.com/{os.getenv("GITHUB_PROMPT_FILE")}',
+    headers={"Authorization": os.getenv("GITHUB_TOKEN")}
+)
 
 SYSTEM_PROMPT = SystemMessage(
     content=f"""
@@ -31,6 +29,6 @@ Regras:
 
 
 ----------------------- O JOGO ----------------------- 
-{texto}
+{response.content}
 """
 )
