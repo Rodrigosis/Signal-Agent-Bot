@@ -1,15 +1,19 @@
+import sqlite3
 from deepagents import create_deep_agent
-from langgraph.checkpoint.memory import MemorySaver
-from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+# from langgraph.checkpoint.memory import MemorySaver
+# from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from src.infra.llm_proxy import MyCustomLLM
 from src.domain.create_prompt import SYSTEM_PROMPT
+from langgraph.checkpoint.sqlite import SqliteSaver
 
 # ======================
 # Inicializa o Deep Agent (uma vez só)
 # ======================
-llm = MyCustomLLM()  # sua LLM customizada continua funcionando perfeitamente
+llm = MyCustomLLM()  # LLM customizada
 
-checkpointer = MemorySaver()
+conn = sqlite3.connect("/app/data/checkpoints.db", check_same_thread=False)
+checkpointer = SqliteSaver(conn)
+# checkpointer = MemorySaver()
 
 rpg_deep_agent = create_deep_agent(
     model=llm,
