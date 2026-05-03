@@ -4,26 +4,19 @@ from dotenv import load_dotenv
 import requests
 
 load_dotenv()
+OWNER = os.getenv("GITHUB_OWNER")
+REPO = os.getenv("GITHUB_REPO")
+FILE_PATH = os.getenv("GITHUB_FILE_PATH")
+BRANCH = os.getenv("GITHUB_BRANCH")
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
-# response = requests.get(
-#     url=f'https://raw.githubusercontent.com/{os.getenv("GITHUB_PROMPT_FILE")}',
-#     headers={"Authorization": os.getenv("GITHUB_TOKEN")}
-# )
-#
-# if response.status_code != 200:
-#     raise SystemExit(f"Error getting prompt from GitHub: {response.status_code}")
-#
-# SYSTEM_PROMPT = SystemMessage(
-#     content=f"""
-# {response.content}
-# """
-# )
-
-SYSTEM_PROMPT = SystemMessage(
-    content=f"""
-
-"""
+response = requests.get(
+    url=f"https://api.github.com/repos/{OWNER}/{REPO}/contents/{FILE_PATH}",
+    headers={"Authorization": f"Bearer {GITHUB_TOKEN}", "Accept": "application/vnd.github.raw"},
+    params = {"ref": BRANCH}
 )
 
-if __name__ == "__main__":
-    print(SYSTEM_PROMPT)
+if response.status_code != 200:
+    raise SystemExit(f"Error getting prompt from GitHub: {response.status_code} -- {response.text}")
+
+SYSTEM_PROMPT = SystemMessage(content=response.content)
