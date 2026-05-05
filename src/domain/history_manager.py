@@ -2,7 +2,7 @@ from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, Base
 from typing import List
 
 MAX_MESSAGES = 10          # dispara summarização acima disso
-KEEP_RECENT = 6            # mantém as N últimas mensagens intactas após resumir
+KEEP_RECENT = 4            # mantém as N últimas mensagens intactas após resumir
 
 SUMMARY_PROMPT = """Você é um assistente de RPG. Resuma a sessão abaixo em um parágrafo compacto, preservando:
 - Nome e raça/classe do personagem
